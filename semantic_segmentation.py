@@ -76,14 +76,15 @@ class BaslerCam():
 		imageConverted = converter.Convert(result)
 		imageArray = imageConverted.GetArray()
 
-		'''
-		filename = "saved_pypylon_img.png"
-		img.Save(pylon.ImageFileFormat_Png, filename)
-
-		imgToSave = Image.open("saved_pypylon_img.png")
-		imgToSave.save("saved_pypylon_img.bmp")
-		'''
 		return imageArray
+
+	#save an Image as bmp
+	def saveImage(self, result):
+		#filename = "saved_pypylon_img.png"
+		#result.Save(pylon.ImageFileFormat_Bmp, filename)
+
+		imgToSave = Image.fromarray(result)
+		imgToSave.save("saved_pypylon_img.bmp")
 
 def create_pascal_label_colormap():
 	"""Creates a label colormap used in PASCAL VOC segmentation benchmark.
@@ -149,6 +150,9 @@ def main():
 
 	cam = BaslerCam()
 	imageArray = cam.grabImage()
+	cam.saveImage(imageArray)
+
+	sys.exit()
 
 	interpreter = make_interpreter(args.model, device=':0')
 	interpreter.allocate_tensors()
