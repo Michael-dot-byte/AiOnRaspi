@@ -28,11 +28,10 @@ python3 examples/semantic_segmentation.py \
 """
 
 import argparse
-import numpy
+import numpy as np
 import sys
 
 from pycoral.adapters import common
-from pycoral.adapters import segment
 from pycoral.utils.edgetpu import make_interpreter
 import pycoral.utils.edgetpu
 
@@ -40,27 +39,33 @@ def main():
 
 	#rudimentäre Ausschriften vom Coral einschalten
 	pycoral.utils.edgetpu.set_verbosity(1)
+
 	#Auflistung aller Corals
 	print(pycoral.utils.edgetpu.list_edge_tpus())
+
 	#Netz einem Coral zuweisen
 	interpreter = make_interpreter("charModel.tflite", device=':0')
+#	interpreter = make_interpreter("/home/tim/Documents/Projects/coral/pycoral/test_data/mobilenet_v2_1.0_224_inat_bird_quant_edgetpu.tflite", device=':0')
+
 	#Netz "initialisieren"
 	interpreter.allocate_tensors()
+
+	#Input Daten für das Netz vorbereiten
+	data = np.array(np.random.randint(low=0, high=255, size=(1,784))/255)
+
+#	print("Input Daten", data)
+	print("Form der Input Daten", data.shape)
+
 	print("Input Details", common.input_details(interpreter, "shape"))
-	data = numpy.array([[-100.0]])
-	print("Input Daten", data)
-	#print("Form der Input Daten", data.shape)
+
 	#Input für das Netz setzen
-	interpreter_infos = interpreter.get_input_details()[0] #['shape']
+	common.set_input(interpreter, data)
+	#Unterschiedliche Infos zum Input Tensor erfassen
+	print("Art des Input Tensors des Netzes", common.input_tensor(interpreter))
+	print("Input Details", common.input_details(interpreter, "shape"))
+	interpreter_infos = interpreter.get_input_details()[0]
 	for _ in interpreter_infos:
 		print(_,  interpreter_infos[_])
-	#interpreter_shape = interpreter.get_input_details()[0]['shape']
-	#print("Interpreter shape", interpreter_shape)
-	#data = numpy.reshape(data, interpreter_shape)
-	#print("Form der Input Daten", data.shape)
-
-	common.set_input(interpreter, data)
-	print("Art des Input Tensors des Netzes", common.input_tensor(interpreter))
 
 	interpreter.invoke()
 	print("Output Tensor", common.output_tensor(interpreter, 0))
