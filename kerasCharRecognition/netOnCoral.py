@@ -105,8 +105,12 @@ def main():
 	#print("Output Tensor", output)
 
 	#Ergebnis aufbereiten
-	print("Zeichen unmapped", np.argmax(output))
-	print("Zeichen mapped", charList[np.argmax(output)])
+	print("Zeichen unmapped", np.argmax(output[0]))
+	print("Zeichen mapped", charList[np.argmax(output[0])])
+	print("Wahrscheinlichkeit", np.max(output[0]))
+	print("Summe", np.sum(output[0]))
+	print(output[0][:10])
+	print("Länge Outputs", output.shape)
 
 if __name__ == '__main__':
 	main()
