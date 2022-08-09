@@ -80,7 +80,10 @@ def main():
 
 
 	#Festes Bild laden und vorverarbeiten
-	image  = cv2.imread("testBild.jpg")
+#	imageRead  = cv2.imread("testBild.jpg")
+	imageRead  = cv2.imread("testBild2.png")
+#	image = np.resize(imageRead, (112,112,3))
+	image = imageRead
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	threshInv = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 61, 20)
 
@@ -107,7 +110,11 @@ def main():
 
 	for r in rects:
 		x,y,w,h = r
-		if (w >= 56 and w <= 60) and (h >= 53 and h <= 67):
+		print(x,y,w,h)
+
+#		if (w >= 56 and w <= 60) and (h >= 53 and h <= 67):
+		if (w >= 70 and w <= 75) and (h >= 70 and h <= 75):
+
 			#jump to next word
 			if y > alt_y and alt_y != -1:
 				words.append(letters)
@@ -115,7 +122,7 @@ def main():
 
 			if False: #uninverted image
 				#get single letter from big image
-				crop_img = thesh[y:y+h, x:x+w]
+				crop_img = thresh[y:y+h, x:x+w]
 
 				#only take letters which are not blank
 				if crop_img.sum() < 753032:
@@ -124,6 +131,7 @@ def main():
 			else: #inverted image
 				#get single letter from big image
 				crop_img = threshInv[y:y+h, x:x+w]
+#				print(crop_img.sum())
 
 				#only take letters which are not blank
 				if crop_img.sum() > 56610:
@@ -146,8 +154,8 @@ def main():
 			normImage = resImage.astype(np.float32)[:]/255
 			#print(type(normImage[1,1]))
 			#print(normImage)
-	#		plt.imsave("{0}.png".format(cnt), normImage, cmap='gray')
-	#		cnt += 1
+			plt.imsave("{0}.png".format(cnt), normImage, cmap='gray')
+			cnt += 1
 
 	#		print("Form der Input Daten", normImage.shape)
 
@@ -172,15 +180,14 @@ def main():
 
 			#Ergebnis aufbereiten
 	#		print("Zeichen unmapped", np.argmax(output[0]))
-	#		print("Zeichen mapped", charList[np.argmax(output[0])])
-	#		print("Wahrscheinlichkeit", np.max(output[0]))
+			print("Zeichen mapped", charList[np.argmax(output[0])], "Wahrscheinlichkeit", np.max(output[0]))
 			str += charList[np.argmax(output[0])]
 
 			del output
 	#		print("Summe", np.sum(output[0]))
 	#		print(output[0][:10])
 	#		print("Länge Outputs", output.shape)
-		print(str)
+	#	print(str)
 
 if __name__ == '__main__':
 	main()
