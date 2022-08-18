@@ -110,7 +110,7 @@ def main():
 
 	for r in rects:
 		x,y,w,h = r
-		print(x,y,w,h)
+#		print(x,y,w,h)
 
 #		if (w >= 56 and w <= 60) and (h >= 53 and h <= 67):
 		if (w >= 70 and w <= 75) and (h >= 70 and h <= 75):
